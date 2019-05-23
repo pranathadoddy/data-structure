@@ -1,0 +1,63 @@
+<script type="text/javascript" src="node.js"></script>
+<script type="text/javascript" src="graph.js"></script>
+<script type="text/javascript" src="kevinbacon.js"></script>
+<script>
+
+var graph=new Graph();
+
+data.movies.forEach(movie => {
+    var movieNode= new Node(movie.title);
+    graph.AddNode(movieNode);
+
+    var casts=movie.cast;
+    casts.forEach(cast=> {
+        var castNode=graph.GetNode(cast);
+        if(castNode===undefined){
+            castNode=new Node(cast);
+        }
+
+        graph.AddNode(castNode);
+        movieNode.AddEdges(castNode);
+    });
+
+});
+
+var start=graph.AddStart("Daniel Stern");
+var end= graph.AddEnd("Kevin Bacon");
+
+
+var queue=[];
+
+start.searched=true;
+queue.push(start);
+
+while(queue.length > 0){
+    var current=queue.shift();
+    if(current.value===end.value){
+        console.log("Found "+ current.value);
+        break;
+    }
+
+    var edges=current.edges;
+    edges.forEach(edge=>{
+        var neighbor=edge;
+
+        if(!neighbor.searched){
+            neighbor.searched=true;
+            neighbor.parent=current;
+            queue.push(neighbor);
+        }
+    });
+}
+
+var path=[];
+path.push(graph.end);
+var next=end.parent;
+
+while(end.parent!=null){
+    path.push(next);
+    next=next.parent;
+}
+
+
+</script>
